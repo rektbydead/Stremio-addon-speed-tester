@@ -1,9 +1,14 @@
 import WebTorrent from "webtorrent";
 
-const trackerListPromise = await fetch("https://raw.githubusercontent.com/ngosang/trackerslist/refs/heads/master/trackers_all.txt")
-const unformattedList =  await trackerListPromise.text()
-const trackerList = unformattedList.replaceAll("\n\n", "\n").split("\n")
-const trackerListWithoutUDP = trackerList.filter((value) => value.startsWith("udp://") === false && value !== "")
+const getTrackers = async () => {
+	const response = await fetch("https://raw.githubusercontent.com/ngosang/trackerslist/master/trackers_all.txt")
+	const text = await response.text()
+	return text.split('\n')
+		.filter(t => t.trim() && !t.startsWith('udp://'))
+		.slice(0, 15)
+};
+
+const TRACKERS = await getTrackers()
 
 async function testDownloadSpeed(client, testDuration, magnet) {
 	let totalBytes = 0
@@ -13,7 +18,7 @@ async function testDownloadSpeed(client, testDuration, magnet) {
 	return new Promise((resolve) => {
 		const torrent = client.add(magnet, {
 			destroyStoreOnDestroy: true,
-			announce: trackerListWithoutUDP,
+			announce: TRACKERS,
 		})
 
 		const exit = () => {
