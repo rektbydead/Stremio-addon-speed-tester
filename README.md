@@ -1,0 +1,1 @@
+# Stremio-addon-speed-tester
