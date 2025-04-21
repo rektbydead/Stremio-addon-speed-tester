@@ -57,6 +57,7 @@ export async function obtainValidMagnets(maxConcurrentTests, testDuration, speed
 			dht: false,
 			lsd: false,
 			webSeeds: false,
+			utp: false
 		})
 
 		const batch = queue.splice(0, maxConcurrentTests)
