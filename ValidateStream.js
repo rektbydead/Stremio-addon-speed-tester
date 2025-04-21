@@ -26,7 +26,9 @@ async function testDownloadSpeed(client, testDuration, magnet) {
 				torrent.destroy()
 			}
 
-			resolve({ speed: totalBytes / (1024 * 1024), peers: peerCount })
+			const duration = (Date.now() - startTime) / 1000
+			const speed = (totalBytes / (1024 * 1024) / duration).toFixed(3)
+			resolve({ speed: speed, peers: peerCount })
 		}
 
 		setTimeout(exit, testDuration);
