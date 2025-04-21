@@ -22,8 +22,8 @@ async function testDownloadSpeed(client, testDuration, magnet) {
 		})
 
 		const exit = () => {
-			if (torrent.closed === false) {
-				torrent.close()
+			if (torrent.destroyed === false) {
+				torrent.destroy()
 			}
 
 			resolve({ speed: totalBytes / (1024 * 1024), peers: peerCount })
