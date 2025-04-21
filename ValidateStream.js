@@ -1,5 +1,10 @@
 import webtorrent from "webtorrent";
 
+const trackerListPromise = await fetch("https://raw.githubusercontent.com/ngosang/trackerslist/refs/heads/master/trackers_best.txt")
+const unformattedList =  await trackerListPromise.text()
+const trackerList = unformattedList.replaceAll("\n\n", "\n").split("\n")
+const trackerListWithoutUDP = trackerList.filter((value) => value.startsWith("udp://") === false && value !== "")
+
 async function testDownloadSpeed(client, testDuration, magnet) {
 	let totalBytes = 0
 	let peerCount = 0
@@ -7,15 +12,11 @@ async function testDownloadSpeed(client, testDuration, magnet) {
 
 	return new Promise((resolve) => {
 		const torrent = client.add(magnet, {
-			destroyStoreOnDestroy: true
+			destroyStoreOnDestroy: true,
+			announce: trackerListWithoutUDP,
 		})
 
-		const cleanup = () => {
-			torrent.destroy()
-		};
-
 		setTimeout(() => {
-			cleanup()
 			resolve({ speed: totalBytes / (1024 * 1024), peers: peerCount })
 		}, testDuration);
 
@@ -28,7 +29,6 @@ async function testDownloadSpeed(client, testDuration, magnet) {
 		})
 
 		torrent.on('error', () => {
-			cleanup()
 			resolve({ speed: totalBytes / (1024 * 1024), peers: peerCount })
 		})
 
@@ -61,10 +61,42 @@ export async function obtainValidMagnets(maxConcurrentTests, testDuration, speed
 		setInterval(() => {}, 100)
 	}
 
-	client.destroy()
 
 	return results.filter(stream =>
 		stream.speed >= speedThreshold &&
 		stream.peers >= minPeersForValidTest
 	).sort((a, b) => b.speed - a.speed)
 }
+
+/*
+The router crashes
+
+function testing() {
+
+	const promises = []
+	const batchesList = []
+
+	while (queue.length > 0) {
+		const client = new webtorrent()
+		const batch = queue.splice(0, maxConcurrentTests)
+		batchesList.push(batch)
+
+		promises.push(
+			Promise.all(batch.map((magnet) => testDownloadSpeed(client, testDuration, magnet)))
+		)
+	}
+
+	const results = []
+
+	for (let i = 0; i < promises.length; i++) {
+		const batchResults = await promises[i]
+		console.log(batchResults)
+		batchResults.forEach((result, i) => {
+			results.push({
+				...batchesList[i],
+				...result
+			})
+		})
+	}
+}
+*/
