@@ -29,9 +29,7 @@ async function testDownloadSpeed(client, testDuration, magnet) {
 			resolve({ speed: totalBytes / (1024 * 1024), peers: peerCount })
 		}
 
-		setTimeout(() => {
-			exit()
-		}, testDuration);
+		setTimeout(exit, testDuration);
 
 		torrent.on('download', (bytes) => {
 			if (startTime === 0) {
@@ -41,9 +39,7 @@ async function testDownloadSpeed(client, testDuration, magnet) {
 			totalBytes += bytes
 		})
 
-		torrent.on('error', () => {
-			exit()
-		})
+		torrent.on('error', exit)
 
 		torrent.on('wire', () => {
 			peerCount = torrent.wires.length

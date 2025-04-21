@@ -3,8 +3,8 @@ import {constructMagnet} from "./MagnetConstructor.js";
 import {obtainValidMagnets} from "./ValidateStream.js";
 
 const CONFIG = {
-	maxConcurrentTests: 5,
-	testDuration: 5000,
+	maxConcurrentTests: 10,
+	testDuration: 2500,
 	minPeersForValidTest: 1,
 	speedThreshold: 0.00000000000000001,
 }
