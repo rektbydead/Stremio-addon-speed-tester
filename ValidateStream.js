@@ -1,6 +1,6 @@
-import webtorrent from "webtorrent";
+import WebTorrent from "webtorrent";
 
-const trackerListPromise = await fetch("https://raw.githubusercontent.com/ngosang/trackerslist/refs/heads/master/trackers_best.txt")
+const trackerListPromise = await fetch("https://raw.githubusercontent.com/ngosang/trackerslist/refs/heads/master/trackers_all.txt")
 const unformattedList =  await trackerListPromise.text()
 const trackerList = unformattedList.replaceAll("\n\n", "\n").split("\n")
 const trackerListWithoutUDP = trackerList.filter((value) => value.startsWith("udp://") === false && value !== "")
@@ -16,8 +16,16 @@ async function testDownloadSpeed(client, testDuration, magnet) {
 			announce: trackerListWithoutUDP,
 		})
 
-		setTimeout(() => {
+		const exit = () => {
+			if (torrent.closed === false) {
+				torrent.close()
+			}
+
 			resolve({ speed: totalBytes / (1024 * 1024), peers: peerCount })
+		}
+
+		setTimeout(() => {
+			exit()
 		}, testDuration);
 
 		torrent.on('download', (bytes) => {
@@ -29,7 +37,7 @@ async function testDownloadSpeed(client, testDuration, magnet) {
 		})
 
 		torrent.on('error', () => {
-			resolve({ speed: totalBytes / (1024 * 1024), peers: peerCount })
+			exit()
 		})
 
 		torrent.on('wire', () => {
@@ -42,8 +50,14 @@ export async function obtainValidMagnets(maxConcurrentTests, testDuration, speed
 	const queue = [...magnets]
 	const results = []
 
-	const client = new webtorrent()
 	while (queue.length > 0) {
+
+		const client = new WebTorrent({
+			dht: false,
+			lsd: false,
+			webSeeds: false,
+		})
+
 		const batch = queue.splice(0, maxConcurrentTests)
 
 		const batchResults = await Promise.all(
@@ -56,6 +70,8 @@ export async function obtainValidMagnets(maxConcurrentTests, testDuration, speed
 				...result
 			})
 		})
+
+		if (client.destroyed === false)	client.destroy()
 
 		console.log(`Batch complete - Missing ${queue.length} magnets`)
 		if (queue.length > 0) await new Promise(resolve => setTimeout(resolve, 1000));
