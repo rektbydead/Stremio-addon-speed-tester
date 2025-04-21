@@ -62,23 +62,24 @@ export async function obtainValidMagnets(maxConcurrentTests, testDuration, speed
 
 		const batch = queue.splice(0, maxConcurrentTests)
 
-		const batchResults = await Promise.all(
-			batch.map(magnet => testDownloadSpeed(client, testDuration, magnet))
-		)
+		try {
+			const batchResults = await Promise.all(
+				batch.map(magnet => testDownloadSpeed(client, testDuration, magnet))
+			)
 
-		batchResults.forEach((result, i) => {
-			results.push({
-				...batch[i],
-				...result
+			batchResults.forEach((result, i) => {
+				results.push({
+					...batch[i],
+					...result
+				})
 			})
-		})
-
-		if (client.destroyed === false)	client.destroy()
+		} finally {
+			await new Promise(resolve => client.destroy(resolve))
+			await new Promise(resolve => setTimeout(resolve, 1000))
+		}
 
 		console.log(`Batch complete - Missing ${queue.length} magnets`)
-		if (queue.length > 0) await new Promise(resolve => setTimeout(resolve, 1000));
 	}
-
 
 	return results.filter(stream =>
 		stream.speed >= speedThreshold &&

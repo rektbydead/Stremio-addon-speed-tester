@@ -1,7 +1,7 @@
 import WebTorrent from "webtorrent";
 
 // Cache for working peers (magnet -> peer list)
-// const peerCache = new Map();
+const peerCache = new Map();
 
 // Optimized tracker list processing
 const getTrackers = async () => {
@@ -15,7 +15,7 @@ const getTrackers = async () => {
 const TRACKERS = await getTrackers();
 
 async function testDownloadSpeed(client, testDuration, magnet) {
-	const cachedPeers = [] //peerCache.get(magnet) || [];
+	const cachedPeers = peerCache.get(magnet) || [];
 
 	console.log(cachedPeers.length ? { addPeers: cachedPeers } : {})
 
