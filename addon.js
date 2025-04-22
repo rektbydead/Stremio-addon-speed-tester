@@ -18,6 +18,7 @@ const CONFIG = {
   testDuration: 5000,
   minPeersForValidTest: 1,
   speedThreshold: 0.00000000000000001,
+  batchTimeout: 100
 }
 
 const streamHandler = async ({ type, id }) => {
@@ -31,6 +32,7 @@ const streamHandler = async ({ type, id }) => {
         CONFIG.testDuration,
         CONFIG.speedThreshold,
         CONFIG.minPeersForValidTest,
+        CONFIG.batchTimeout,
         streamsWithMagnets
     )
 

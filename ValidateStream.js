@@ -49,7 +49,7 @@ async function testDownloadSpeed(client, testDuration, magnet) {
 	})
 }
 
-export async function obtainValidMagnets(maxConcurrentTests, testDuration, speedThreshold, minPeersForValidTest, magnets) {
+export async function obtainValidMagnets(maxConcurrentTests, testDuration, speedThreshold, minPeersForValidTest, batchTimeout, magnets) {
 	const queue = [...magnets]
 	const results = []
 
@@ -79,7 +79,9 @@ export async function obtainValidMagnets(maxConcurrentTests, testDuration, speed
 			console.log(`Batch complete - Missing ${queue.length} magnets`)
 		} finally {
 			await new Promise(resolve => client.destroy(resolve))
-			await new Promise(resolve => setTimeout(resolve, 1000))
+			if (queue.length > 0) {
+				await new Promise(resolve => setTimeout(resolve, batchTimeout))
+			}
 		}
 	}
 
