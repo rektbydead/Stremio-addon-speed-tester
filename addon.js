@@ -14,7 +14,7 @@ const builder = new addonBuilder({
 })
 
 const CONFIG = {
-  maxConcurrentTests: 5,
+  maxConcurrentTests: 25,
   testDuration: 5000,
   minPeersForValidTest: 1,
   speedThreshold: 0.00000000000000001,
