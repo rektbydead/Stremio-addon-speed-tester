@@ -62,6 +62,8 @@ export async function obtainValidMagnets(maxConcurrentTests, testDuration, speed
 			utp: false
 		})
 
+		client.setMaxListeners(maxConcurrentTests)
+
 		const batch = queue.splice(0, maxConcurrentTests)
 
 		try {
