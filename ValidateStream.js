@@ -76,7 +76,9 @@ export async function obtainValidMagnets(maxConcurrentTests, testDuration, speed
 				})
 			})
 
-			console.log(`Batch complete - Missing ${queue.length} magnets`)
+			if (queue.length > 0) {
+				console.log(`Batch complete - Missing ${queue.length} magnets`)
+			}
 		} finally {
 			await new Promise(resolve => client.destroy(resolve))
 			if (queue.length > 0) {
