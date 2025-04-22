@@ -1,5 +1,8 @@
 # 📺 Smart Torrent Selector
-A Stremio addon that ranks torrents by actual download speed before streaming, ensuring you get the best possible performance.
+An addon for Stremio that ranks torrents, obtained from torrentio, based on download speed.
+
+Torrentio provides torrent streams from scraped torrent providers. Currently supports YTS(+), EZTV(+), RARBG(+), 1337x(+), ThePirateBay(+), KickassTorrents(+), TorrentGalaxy(+), MagnetDL(+), HorribleSubs(+), NyaaSi(+), TokyoTosho(+), AniDex(+), Rutor(+), Rutracker(+), Comando(+), BluDV(+), Torrent9(+), ilCorSaRoNeRo(+), MejorTorrent(+), Wolfmax4k(+), Cinecalidad(+), BestTorrents(+).
+
 
 ## 🔥 Features
 - **Real-time Speed Testing**: Tests torrent download speeds before offering streams.
