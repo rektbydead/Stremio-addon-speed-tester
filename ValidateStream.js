@@ -1,4 +1,6 @@
 import WebTorrent from "webtorrent";
+import MemoryChunkStore from "memory-chunk-store";
+
 
 const getTrackers = async () => {
 	const response = await fetch("https://raw.githubusercontent.com/ngosang/trackerslist/master/trackers_all.txt")
@@ -18,20 +20,26 @@ async function testDownloadSpeed(client, testDuration, magnet) {
 	return new Promise((resolve) => {
 		const torrent = client.add(magnet, {
 			destroyStoreOnDestroy: true,
+			store: MemoryChunkStore,
 			announce: TRACKERS,
+			path: false
 		})
 
 		const exit = () => {
-			if (torrent.destroyed === false) {
-				torrent.destroy()
-			}
+			try {
+				if (torrent.destroyed === false) {
+					torrent.destroy()
+				}
 
-			const duration = (Date.now() - startTime) / 1000
-			const speed = (totalBytes / (1024 * 1024) / duration).toFixed(3)
-			resolve({ speed: speed, peers: peerCount })
+				const duration = (Date.now() - startTime) / 1000
+				const speed = (totalBytes / (1024 * 1024) / duration).toFixed(3)
+				resolve({ speed: speed, peers: peerCount })
+			} catch (err) {
+                resolve({ speed: 0, peers: 0, error: err.message });
+            }
 		}
 
-		setTimeout(exit, testDuration);
+		const timer = setTimeout(exit, testDuration);
 
 		torrent.on('download', (bytes) => {
 			if (startTime === 0) {
@@ -41,7 +49,10 @@ async function testDownloadSpeed(client, testDuration, magnet) {
 			totalBytes += bytes
 		})
 
-		torrent.on('error', exit)
+		torrent.on('error', (err) => {
+			clearTimeout(timer);
+			resolve({ speed: 0, peers: 0, error: err.message });
+		})
 
 		torrent.on('wire', () => {
 			peerCount = torrent.wires.length
