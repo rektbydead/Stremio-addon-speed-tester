@@ -1,5 +1,5 @@
 import express from 'express'
-import { streamHandler, builder } from "../addon.js";
+import { streamHandler, builder } from "../addon.ts";
 
 const app = express()
 const port = 7000

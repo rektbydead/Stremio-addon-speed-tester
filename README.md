@@ -13,7 +13,7 @@ Torrentio provides torrent streams from scraped torrent providers. Currently sup
 
 ## ⚙️ Configuration
 
-The addon has the settings bellow, which can be modified in the `addon.js`.
+The addon has the settings bellow, which can be modified in the `addon.ts`.
 
 | Setting                | Default Value         | Description                                          |  
 |------------------------|-----------------------|------------------------------------------------------|  
@@ -29,5 +29,5 @@ The addon has the settings bellow, which can be modified in the `addon.js`.
 
 1. **Install Stremio** (if you haven't already) from [stremio.com](https://www.stremio.com/).
 2. **Install project dependencies**: ```npm ci```
-3. **Run the project**: ```node server.js```
+3. **Run the project**: ```node server.ts```
 4. **Install addon**: Addons → Paste ```http://localhost:7000/manifest.json``` in search bar

@@ -6,8 +6,8 @@ export interface TorrentioResponse {
 }
 
 export interface BehaviourHint {
-    bingeGroup: string;
-    filename: string;
+    bingeGroup?: string;
+    filename?: string;
 }
 
 export interface Stream {

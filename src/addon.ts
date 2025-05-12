@@ -1,8 +1,9 @@
 import { addonBuilder } from 'stremio-addon-sdk'
-import {obtainValidMagnets} from "./validator/ValidateStream.js";
-import {fetchStreams} from "./utils/StreamFetcher.js";
-import {constructMagnet} from "./utils/MagnetConstructor.js";
-import {CONFIG} from "./configuration/configuration.js";
+import {obtainValidMagnets} from "./validator/ValidateStream";
+import {fetchStreams} from "./utils/StreamFetcher";
+import {constructMagnet} from "./utils/MagnetConstructor";
+import {CONFIG} from "./configuration/configuration";
+import {TorrentioResponse} from "./type/TorrentioResponse";
 
 const builder = new addonBuilder({
 	id: 'org.speed.torrent',
@@ -34,8 +35,8 @@ const streamHandler = async ({ type, id }) => {
 			}
 		}
 
-		const fetchedStreams = await fetchStreams(type, id)
-		const streamsWithMagnets = fetchedStreams.map((stream) => constructMagnet(stream))
+		const fetchedStreams: TorrentioResponse = await fetchStreams(type, id)
+		const streamsWithMagnets = fetchedStreams.streams.map((stream) => constructMagnet(stream))
 
 		console.log(`Starting to validate ${streamsWithMagnets.length} magnets.`)
 		const validStreams = await obtainValidMagnets(
