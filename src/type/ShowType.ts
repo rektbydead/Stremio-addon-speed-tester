@@ -1,4 +1,4 @@
 enum Type {
     MOVIE = "movie",
-    SHOW = "show",
+    SERIES = "series",
 }
