@@ -1,6 +1,7 @@
 import {Stream} from "../type/TorrentioResponse";
+import {MagnetStream} from "../type/MagnetStream";
 
-export function constructMagnet(stream: Stream) {
+export function constructMagnet(stream: Stream): MagnetStream {
 	const infoHash = stream.infoHash
 	const filename = stream.behaviorHints.filename || stream.title.split('\n')[0]
 

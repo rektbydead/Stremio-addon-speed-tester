@@ -1,5 +1,8 @@
 import WebTorrent from "webtorrent";
 import MemoryChunkStore from "memory-chunk-store";
+import {ValidatedMagnetStream} from "../type/ValidatedMagnetStream";
+import {MagnetStream} from "../type/MagnetStream";
+import {ApplicationConfiguration} from "../type/ApplicationConfiguration";
 
 const getTrackers = async () => {
 	const response = await fetch("https://raw.githubusercontent.com/ngosang/trackerslist/master/trackers_all.txt")
@@ -59,9 +62,9 @@ async function testDownloadSpeed(client, testDuration, magnet) {
 	})
 }
 
-export async function obtainValidMagnets(maxConcurrentTests, testDuration, speedThreshold, minPeersForValidTest, batchTimeout, magnets) {
+export async function obtainValidMagnets(applicationConfig: ApplicationConfiguration, magnets: MagnetStream[]): Promise<ValidatedMagnetStream[]> {
 	const queue = [...magnets]
-	const results = []
+	const results: ValidatedMagnetStream[] = []
 
 	while (queue.length > 0) {
 
@@ -72,13 +75,13 @@ export async function obtainValidMagnets(maxConcurrentTests, testDuration, speed
 			utp: false
 		})
 
-		client.setMaxListeners(maxConcurrentTests)
+		client.setMaxListeners(applicationConfig.maxConcurrentTests)
 
-		const batch = queue.splice(0, maxConcurrentTests)
+		const batch = queue.splice(0, applicationConfig.maxConcurrentTests)
 
 		try {
 			const batchResults = await Promise.all(
-				batch.map(magnet => testDownloadSpeed(client, testDuration, magnet))
+				batch.map(magnet => testDownloadSpeed(client, applicationConfig.testDuration, magnet))
 			)
 
 			batchResults.forEach((result, i) => {
@@ -94,13 +97,13 @@ export async function obtainValidMagnets(maxConcurrentTests, testDuration, speed
 		} finally {
 			await new Promise(resolve => client.destroy(resolve))
 			if (queue.length > 0) {
-				await new Promise(resolve => setTimeout(resolve, batchTimeout))
+				await new Promise(resolve => setTimeout(resolve, applicationConfig.batchTimeout))
 			}
 		}
 	}
 
 	return results.filter(stream =>
-		stream.speed >= speedThreshold &&
-		stream.peers >= minPeersForValidTest
+		stream.speed >= applicationConfig.speedThreshold &&
+		stream.peers >= applicationConfig.minPeersForValidTest
 	).sort((a, b) => b.speed - a.speed)
 }

@@ -1,4 +1,6 @@
-export const CONFIG = {
+import {ApplicationConfiguration} from "../type/ApplicationConfiguration";
+
+export const APPLICATION_CONFIG: ApplicationConfiguration = {
 	maxConcurrentTests: 25,
 	testDuration: 5000,
 	minPeersForValidTest: 1,
