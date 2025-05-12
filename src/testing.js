@@ -1,6 +1,6 @@
-import {fetchStreams} from "./StreamFetcher.js";
-import {constructMagnet} from "./MagnetConstructor.js";
-import {obtainValidMagnets} from "./ValidateStream.js";
+import {fetchStreams} from "./utils/StreamFetcher.js";
+import {constructMagnet} from "./utils/MagnetConstructor.js";
+import {obtainValidMagnets} from "./validator/ValidateStream.js";
 
 const CONFIG = {
 	maxConcurrentTests: 25,

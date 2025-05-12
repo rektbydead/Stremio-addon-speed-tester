@@ -1,7 +1,8 @@
 import { addonBuilder } from 'stremio-addon-sdk'
-import {obtainValidMagnets} from "./ValidateStream.js";
-import {fetchStreams} from "./StreamFetcher.js";
-import {constructMagnet} from "./MagnetConstructor.js";
+import {obtainValidMagnets} from "./validator/ValidateStream.js";
+import {fetchStreams} from "./utils/StreamFetcher.js";
+import {constructMagnet} from "./utils/MagnetConstructor.js";
+import {CONFIG} from "./configuration/configuration.js";
 
 const builder = new addonBuilder({
 	id: 'org.speed.torrent',
@@ -12,15 +13,6 @@ const builder = new addonBuilder({
 	types: ['movie', 'series'],
 	catalogs: [],
 })
-
-const CONFIG = {
-	maxConcurrentTests: 25,
-	testDuration: 5000,
-	minPeersForValidTest: 1,
-	speedThreshold: 0.00000000000000001,
-	batchTimeout: 100,
-	streamExpirationTime: 1000 * 60 * 30, // 30 minutes
-}
 
 const CACHED_STREAMS = new Map()
 

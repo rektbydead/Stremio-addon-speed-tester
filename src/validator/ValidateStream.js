@@ -1,7 +1,6 @@
 import WebTorrent from "webtorrent";
 import MemoryChunkStore from "memory-chunk-store";
 
-
 const getTrackers = async () => {
 	const response = await fetch("https://raw.githubusercontent.com/ngosang/trackerslist/master/trackers_all.txt")
 	const text = await response.text()
@@ -105,36 +104,3 @@ export async function obtainValidMagnets(maxConcurrentTests, testDuration, speed
 		stream.peers >= minPeersForValidTest
 	).sort((a, b) => b.speed - a.speed)
 }
-
-/*
-The router crashes
-
-function testing() {
-
-	const promises = []
-	const batchesList = []
-
-	while (queue.length > 0) {
-		const client = new webtorrent()
-		const batch = queue.splice(0, maxConcurrentTests)
-		batchesList.push(batch)
-
-		promises.push(
-			Promise.all(batch.map((magnet) => testDownloadSpeed(client, testDuration, magnet)))
-		)
-	}
-
-	const results = []
-
-	for (let i = 0; i < promises.length; i++) {
-		const batchResults = await promises[i]
-		console.log(batchResults)
-		batchResults.forEach((result, i) => {
-			results.push({
-				...batchesList[i],
-				...result
-			})
-		})
-	}
-}
-*/
