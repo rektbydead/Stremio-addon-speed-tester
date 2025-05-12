@@ -12,6 +12,7 @@
   "dependencies": {
     "memory-chunk-store": "^1.3.5",
     "stremio-addon-sdk": "^1.6.10",
+    "typescript": "^5.8.3",
     "webtorrent": "^2.6.3"
   },
   "description": ""
