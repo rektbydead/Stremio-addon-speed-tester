@@ -19,8 +19,8 @@ export async function testDownloadSpeed(client: WebTorrent, applicationConfig: A
     })
 
     return new Promise((resolve) => {
-        const maximumTestDuration = setTimeout(exit, applicationConfig.testDuration);
-        const minimumDownloadAfterDuration = setTimeout(checkDownloadStarted, applicationConfig.testDuration);
+        const maximumTestDuration = setTimeout(exit, applicationConfig.testDuration)
+        const minimumDownloadAfterDuration = setTimeout(checkDownloadStarted, applicationConfig.downloadStartedDuration)
 
         function exit()  {
             if (torrent.destroyed === false) torrent.destroy()
