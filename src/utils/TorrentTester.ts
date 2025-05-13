@@ -2,6 +2,7 @@ import WebTorrent from "webtorrent";
 import {MagnetStream} from "../type/MagnetStream";
 import {getTrackers} from "./TrackerObtainer";
 import {ApplicationConfiguration} from "../type/ApplicationConfiguration";
+import {bytesToMB} from "./SizeConvertion";
 
 export async function testDownloadSpeed(client: WebTorrent, applicationConfig: ApplicationConfiguration, magnet: MagnetStream) {
     let totalBytes = 0
@@ -27,24 +28,32 @@ export async function testDownloadSpeed(client: WebTorrent, applicationConfig: A
         }
 
         function checkDownloadStarted() {
-
+            console.log(`Downloaded ${totalBytes} bytes.`)
+            if (totalBytes === 0) {
+                console.log("No bytes detected, cancelling.")
+                clearTimeout(maximumTestDuration)
+                return exit()
+            }
         }
 
-        //torrent.on('download', (bytes) => {
-        //    if (startTime === 0) {
-        //        startTime = Date.now()
-        //    }
-//
-        //    totalBytes += bytes
-        //})
-//
-        //torrent.on('error', (err) => {
-        //    clearTimeout(maximumTestDuration);
-        //    resolve({ speed: 0, peers: 0, error: err.message });
-        //})
-//
-        //torrent.on('wire', () => {
-        //    peerCount = torrent.wires.length
-        //})
+        torrent.on('download', (bytes) => {
+            totalBytes += bytes
+
+            /* Download maximum of 'maximumDownloadedMegaBytes' Megabytes */
+            const megabytes = bytesToMB(totalBytes)
+            if (megabytes >= applicationConfig.maximumDownloadedMegaBytes) {
+                return exit()
+            }
+        })
+
+        torrent.on('wire', () => {
+            peerCount = torrent.wires.length
+        })
+
+        torrent.on('error', (err) => {
+            clearTimeout(maximumTestDuration)
+            clearTimeout(minimumDownloadAfterDuration)
+            resolve({ speed: 0, peers: 0, error: err.message })
+        })
     })
 }
