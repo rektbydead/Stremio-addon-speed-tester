@@ -1,6 +1,6 @@
 import WebTorrent from "webtorrent";
 import {MagnetStream} from "../type/MagnetStream";
-import {getTrackers} from "./TrackerObtainer";
+import {getTrackerFromSources, getTrackers} from "./TrackerObtainer";
 import {ApplicationConfiguration} from "../type/ApplicationConfiguration";
 import {bytesToMB} from "./SizeConvertion";
 
@@ -9,9 +9,12 @@ export async function testDownloadSpeed(client: WebTorrent, applicationConfig: A
     let peerCount = 0
     let startTime = Date.now()
 
+    const generalTrackers = await getTrackers()
+    const magnetTrackers = getTrackerFromSources(magnetStream.sources ?? [])
+
     const torrent = client.add(magnetStream.magnet, {
         destroyStoreOnDestroy: true,
-        announce: getTrackers(),
+        announce: [...generalTrackers, ...magnetTrackers],
         path: false
     })
 
