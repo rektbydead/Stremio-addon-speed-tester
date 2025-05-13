@@ -1,8 +1,8 @@
-import WebTorrent from "webtorrent";
-import {MagnetStream} from "../type/MagnetStream";
-import {getTrackerFromSources, getTrackers} from "./TrackerObtainer";
-import {ApplicationConfiguration} from "../type/ApplicationConfiguration";
-import {bytesToMB} from "./SizeConvertion";
+import WebTorrent from "webtorrent"
+import MemoryChunkStore from "memory-chunk-store"
+import {MagnetStream} from "../type/MagnetStream"
+import {getTrackers} from "./TrackerObtainer"
+import {ApplicationConfiguration} from "../type/ApplicationConfiguration"
 
 export async function testDownloadSpeed(client: WebTorrent, applicationConfig: ApplicationConfiguration, magnetStream: MagnetStream) {
     let totalBytes = 0
@@ -10,11 +10,13 @@ export async function testDownloadSpeed(client: WebTorrent, applicationConfig: A
     let startTime = Date.now()
 
     const generalTrackers = await getTrackers()
-    const magnetTrackers = getTrackerFromSources(magnetStream.sources ?? [])
+    // const magnetTrackers = getTrackerFromSources(magnetStream.sources ?? [])
+    // console.log([...generalTrackers, ...magnetTrackers])
 
     const torrent = client.add(magnetStream.magnet, {
         destroyStoreOnDestroy: true,
-        announce: [...generalTrackers, ...magnetTrackers],
+        store: MemoryChunkStore,
+        announce: generalTrackers,
         path: false
     })
 
@@ -27,13 +29,12 @@ export async function testDownloadSpeed(client: WebTorrent, applicationConfig: A
 
             const duration = (Date.now() - startTime) / 1000
             const speed = (totalBytes / (1024 * 1024) / duration).toFixed(3)
-            return resolve({ duration, speed })
+            return resolve({ speed: speed, peers: peerCount })
         }
 
         function checkDownloadStarted() {
-            console.log(`Downloaded ${totalBytes} bytes.`)
             if (totalBytes === 0) {
-                console.log("No bytes detected, cancelling.")
+                console.log(`Cancelling magnet: ${magnetStream.infoHash}`)
                 clearTimeout(maximumTestDuration)
                 return exit()
             }
@@ -43,7 +44,7 @@ export async function testDownloadSpeed(client: WebTorrent, applicationConfig: A
             totalBytes += bytes
 
             /* Download maximum of 'maximumDownloadedMegaBytes' Megabytes */
-            const megabytes = bytesToMB(totalBytes)
+            const megabytes = totalBytes / (1024 * 1024)
             if (megabytes >= applicationConfig.maximumDownloadedMegaBytes) {
                 return exit()
             }
