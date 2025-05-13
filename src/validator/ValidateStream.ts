@@ -11,7 +11,10 @@ async function evaluateNext(queue: MagnetStream[], client: WebTorrent, applicati
 
 	const magnet: MagnetStream = queue.shift()
 	const data: any = await testDownloadSpeed(client, applicationConfig, magnet)
-	results.push(data)
+	results.push({
+		...magnet,
+		...data
+	})
 
 	return await evaluateNext(queue, client, applicationConfig, results)
 }
