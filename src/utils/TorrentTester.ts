@@ -19,6 +19,8 @@ export async function testDownloadSpeed(client: WebTorrent, applicationConfig: A
         announce: generalTrackers,
         private: true,
         storeCacheSlots: 0,
+        skipVerify: true,
+        alwaysChokeSeeders: false
     })
 
     return new Promise((resolve) => {
@@ -28,6 +30,8 @@ export async function testDownloadSpeed(client: WebTorrent, applicationConfig: A
         function exit()  {
             if (torrent.destroyed === false) torrent.destroy()
 
+            clearTimeout(maximumTestDuration)
+            clearTimeout(minimumDownloadAfterDuration)
             const duration = (Date.now() - startTime) / 1000
             const speed = (totalBytes / (1024 * 1024) / duration).toFixed(3)
             return resolve({ speed: speed, peers: peerCount })
