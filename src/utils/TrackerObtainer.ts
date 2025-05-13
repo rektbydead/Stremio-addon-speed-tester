@@ -8,7 +8,7 @@ export async function getTrackers(): Promise<string[]> {
     const response = await fetch("https://raw.githubusercontent.com/ngosang/trackerslist/refs/heads/master/trackers_best.txt")
     const text = await response.text()
     const trackerList: string[] = text.split('\n')
-        .filter(t => t.trim() && !t.startsWith('udp://'))
+        .filter(t => t.trim() && t.startsWith(''))
 
     TRACKERS.push(...trackerList)
     return TRACKERS
@@ -17,5 +17,5 @@ export async function getTrackers(): Promise<string[]> {
 export function getTrackerFromSources(sources: string[]): string[] {
     return sources
         .map(source => source.replace("tracker:", ""))
-        .filter(source => source.trim() && !source.startsWith('udp://'))
+        .filter(source => source.trim() && !source.startsWith(''))
 }
