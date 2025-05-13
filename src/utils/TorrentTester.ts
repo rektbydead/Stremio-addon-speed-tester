@@ -17,7 +17,8 @@ export async function testDownloadSpeed(client: WebTorrent, applicationConfig: A
         destroyStoreOnDestroy: true,
         store: MemoryChunkStore,
         announce: generalTrackers,
-        path: false
+        private: true,
+        storeCacheSlots: 0,
     })
 
     return new Promise((resolve) => {
