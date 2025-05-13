@@ -50,7 +50,7 @@ const streamHandler = async ({ type, id }) => {
 			streams: validStreams
 		})
 
-		console.log(`Total of number of valid streams ${validStreams.length}:`)
+		console.log(`Total of number of valid streams: ${validStreams.length}`)
 		return { streams: validStreams }
 	} catch (error) {
 		console.error("Error in streamHandler:", error)

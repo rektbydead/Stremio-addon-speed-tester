@@ -14,7 +14,7 @@ const getTrackers = async () => {
 
 const TRACKERS = await getTrackers()
 
-async function testDownloadSpeed(client, testDuration, magnet) {
+async function testDownloadSpeed(client: WebTorrent, testDuration: number, magnet: MagnetStream) {
 	let totalBytes = 0
 	let peerCount = 0
 	let startTime = 0
@@ -62,48 +62,85 @@ async function testDownloadSpeed(client, testDuration, magnet) {
 	})
 }
 
+async function evaluateNext(queue: MagnetStream[], client: WebTorrent, applicationConfig: ApplicationConfiguration, results: any[]) {
+	if (queue.length === 0) { return results }
+
+	console.log(`Remaining ${queue.length} magnets. `)
+
+	const magnet: MagnetStream = queue.shift()
+	const data: any = await testDownloadSpeed(client, applicationConfig.testDuration, magnet)
+	results.push(data)
+
+	return await evaluateNext(queue, client, applicationConfig, results)
+}
+
 export async function obtainValidMagnets(applicationConfig: ApplicationConfiguration, magnets: MagnetStream[]): Promise<ValidatedMagnetStream[]> {
-	const queue = [...magnets]
+	const queue: MagnetStream[] = [...magnets]
 	const results: ValidatedMagnetStream[] = []
 
-	while (queue.length > 0) {
+	const promiseList: Promise<any>[] = []
+	/* Start 5 test maximum concurrently */
+	for (let i = 0; i < queue.length && i < applicationConfig.maxConcurrentTests; i++) {
+		const client = new WebTorrent({dht: false, lsd: false, webSeeds: false,utp: false})
 
-		const client = new WebTorrent({
-			dht: false,
-			lsd: false,
-			webSeeds: false,
-			utp: false
+		const promise = evaluateNext(queue, client, applicationConfig, []).then(data => {
+			results.push(...data)
 		})
 
-		client.setMaxListeners(applicationConfig.maxConcurrentTests)
-
-		const batch = queue.splice(0, applicationConfig.maxConcurrentTests)
-
-		try {
-			const batchResults = await Promise.all(
-				batch.map(magnet => testDownloadSpeed(client, applicationConfig.testDuration, magnet))
-			)
-
-			batchResults.forEach((result, i) => {
-				results.push({
-					...batch[i],
-					...result
-				})
-			})
-
-			if (queue.length > 0) {
-				console.log(`Batch complete - Missing ${queue.length} magnets`)
-			}
-		} finally {
-			await new Promise(resolve => client.destroy(resolve))
-			if (queue.length > 0) {
-				await new Promise(resolve => setTimeout(resolve, applicationConfig.batchTimeout))
-			}
-		}
+		promiseList.push(promise)
 	}
+
+	await Promise.all(promiseList)
 
 	return results.filter(stream =>
 		stream.speed >= applicationConfig.speedThreshold &&
 		stream.peers >= applicationConfig.minPeersForValidTest
 	).sort((a, b) => b.speed - a.speed)
+}
+
+	// while (queue.length > 0) {
+	// 	const client = new WebTorrent({dht: false, lsd: false, webSeeds: false,utp: false})
+	// 	client.setMaxListeners(applicationConfig.maxConcurrentTests)
+	// }
+
+	//while (queue.length > 0) {
+
+	//	const client = new WebTorrent({
+	//		dht: false,
+	//		lsd: false,
+	//		webSeeds: false,
+	//		utp: false
+	//	})
+
+	//	client.setMaxListeners(applicationConfig.maxConcurrentTests)
+
+	//	const batch = queue.splice(0, applicationConfig.maxConcurrentTests)
+
+	//	try {
+	//		const batchResults = await Promise.all(
+	//			batch.map(magnet => testDownloadSpeed(client, applicationConfig.testDuration, magnet))
+	//		)
+
+	//		batchResults.forEach((result, i) => {
+	//			results.push({
+	//				...batch[i],
+	//				...result
+	//			})
+	//		})
+
+	//		if (queue.length > 0) {
+	//			console.log(`Batch complete - Missing ${queue.length} magnets`)
+	//		}
+	//	} finally {
+	//		await new Promise(resolve => client.destroy(resolve))
+	//		if (queue.length > 0) {
+	//			await new Promise(resolve => setTimeout(resolve, applicationConfig.batchTimeout))
+	//		}
+	//	}
+	//}
+
+	// return results.filter(stream =>
+	// 	stream.speed >= applicationConfig.speedThreshold &&
+	// 	stream.peers >= applicationConfig.minPeersForValidTest
+	// ).sort((a, b) => b.speed - a.speed)
 }
