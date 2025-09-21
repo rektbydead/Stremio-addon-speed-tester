@@ -13,11 +13,11 @@ Torrentio provides torrent streams from scraped torrent providers. Currently sup
 
 ## ⚙️ Configuration
 
-The addon has the settings bellow, which can be modified in the `addon.ts`.
+The addon has the settings bellow, which can be modified in the `addon.js`.
 
 | Setting                | Default Value         | Description                                          |  
 |------------------------|-----------------------|------------------------------------------------------|  
-| `maxConcurrentTests`   | `25`                  | Maximum number of torrents tested simultaneously.    |  
+| `maxConcurrentTests`   | `25`                  | Maximum number of torrents tested simultaneously. If the application keeps crashing, reduce this value to 5 and keep increasing.   |  
 | `testDuration`         | `5000 ms`             | How long (ms) to test each torrent's speed.          |  
 | `minPeersForValidTest` | `1`                   | Minimum peers required for a valid speed test.       |  
 | `speedThreshold`       | `0.00000000000000001` | Minimum speed (Mb/s) to consider a torrent valid.    |  
@@ -29,5 +29,5 @@ The addon has the settings bellow, which can be modified in the `addon.ts`.
 
 1. **Install Stremio** (if you haven't already) from [stremio.com](https://www.stremio.com/).
 2. **Install project dependencies**: ```npm ci```
-3. **Run the project**: ```node app.ts```
+3. **Run the project**: ```node server.js```
 4. **Install addon**: Addons → Paste ```http://localhost:7000/manifest.json``` in search bar
