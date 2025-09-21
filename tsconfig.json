@@ -1,11 +1,14 @@
 {
+    "include": ["src"],
     "compilerOptions": {
-        "target": "es2017",
-        "module": "commonjs",
-        "lib": [
-            "es2015",
-            "dom"
-        ],
-      "allowSyntheticDefaultImports": true
+        "target": "ES2022",
+        "module": "ESNext",
+        "moduleResolution": "Node",
+        "esModuleInterop": true,
+        "strict": true,
+        "allowSyntheticDefaultImports": true,
+        "paths": {
+            "@/*": ["./src/*"]
+        },
     }
 }
