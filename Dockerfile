@@ -1,11 +1,11 @@
-FROM docker.io/node:20-alpine
+FROM docker.io/node:20
 
 WORKDIR /app/
 
-COPY package*.json .
+COPY package*.json tsconfig.json ./
 
 RUN npm i
 
-COPY ./src/ .
+COPY . .
 
-CMD ["npx", "tsx", "app.ts"]
+CMD ["npx", "tsx", "./src/app.ts"]

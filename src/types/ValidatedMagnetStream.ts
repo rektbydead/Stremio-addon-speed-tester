@@ -1,4 +1,4 @@
-import {MagnetStream} from "./MagnetStream";
+import {MagnetStream} from "@/types/MagnetStream";
 
 export interface ValidatedMagnetStream extends MagnetStream {
     speed: number,

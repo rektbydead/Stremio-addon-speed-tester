@@ -2,7 +2,7 @@ import WebTorrent from "webtorrent";
 import {ValidatedMagnetStream} from "@/types/ValidatedMagnetStream";
 import {MagnetStream} from "@/types/MagnetStream";
 import {ApplicationConfiguration} from "@/types/ApplicationConfiguration";
-import {testDownloadSpeed} from "../utils/TorrentTester";
+import {testDownloadSpeed} from "@/utils/TorrentTester";
 
 async function evaluateNext(queue: MagnetStream[], client: WebTorrent, applicationConfig: ApplicationConfiguration, results: any[]) {
 	console.log(`Remaining ${queue.length} magnets. `)

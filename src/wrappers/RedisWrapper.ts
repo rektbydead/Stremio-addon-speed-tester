@@ -1,4 +1,4 @@
-import {RedisClient} from "../Redis";
+import {RedisClient} from "@/Redis";
 
 export class RedisWrapper {
 

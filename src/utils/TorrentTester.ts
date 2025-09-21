@@ -1,7 +1,7 @@
 import WebTorrent from "webtorrent"
 import MemoryChunkStore from "memory-chunk-store"
 import {MagnetStream} from "@/types/MagnetStream"
-import {getTrackers} from "./TrackerObtainer"
+import {getTrackers} from "@/utils/TrackerObtainer"
 import {ApplicationConfiguration} from "@/types/ApplicationConfiguration"
 
 export async function testDownloadSpeed(client: WebTorrent, applicationConfig: ApplicationConfiguration, magnetStream: MagnetStream) {
