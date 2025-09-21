@@ -1,8 +1,11 @@
-export function constructMagnet(stream) {
-	const infoHash = stream.infoHash
-	const filename = stream?.behaviorHints?.filename || stream.title.split('\n')[0]
-	const encodedFilename = encodeURIComponent(filename)
+import {Stream} from "@/types/TorrentioResponse";
+import {MagnetStream} from "@/types/MagnetStream";
 
+export function constructMagnet(stream: Stream): MagnetStream {
+	const infoHash = stream.infoHash
+	const filename = stream.behaviorHints.filename || stream.title.split('\n')[0]
+
+	const encodedFilename = encodeURIComponent(filename)
 	let magnet = `magnet:?xt=urn:btih:${infoHash}&dn=${encodedFilename}`
 
 	if (stream.sources) {

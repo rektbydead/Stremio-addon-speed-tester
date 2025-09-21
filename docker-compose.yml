@@ -1,0 +1,21 @@
+services:
+  addon:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "7000:7000"
+    networks:
+      - stremio-addon-speed-test
+    depends_on:
+      - redis
+
+  redis:
+    image: docker.io/redis:alpine
+    command: redis-server --save "" --appendonly no
+    networks:
+      - stremio-addon-speed-test
+
+networks:
+  stremio-addon-speed-test:
+    driver: bridge

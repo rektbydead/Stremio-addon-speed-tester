@@ -1,0 +1,10 @@
+export interface ApplicationConfiguration {
+    maxConcurrentTests: number,
+    testDuration: number,
+    downloadStartedDuration: number,
+    maximumDownloadedMegaBytes: number,
+    minPeersForValidTest: number,
+    speedThreshold: number,
+    batchTimeout: number,
+    streamExpirationTime: number,
+}

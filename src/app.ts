@@ -1,5 +1,6 @@
 import express from 'express'
-import { streamHandler, builder } from "./addon.js";
+import { streamHandler, builder } from "./addon";
+import {getTrackers} from "./utils/TrackerObtainer";
 
 const app = express()
 const port = 7000
@@ -25,6 +26,8 @@ app.get('/stream/:type/:id.json', async (req, res) => {
 	res.end(JSON.stringify(result))
 })
 
-app.listen(port, () => {
+app.listen(port, async () => {
+	await getTrackers()
 	console.log(`🚀 Addon running at http://localhost:${port}/manifest.json`)
+	console.log(`🚀 Tracking list has been downloaded`)
 })
