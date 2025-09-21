@@ -1,6 +1,6 @@
 import {createClient, RedisClientType} from "redis";
 
-export class Redis {
+export class RedisClient {
     private static instance: RedisClientType | undefined = undefined;
 
     private constructor() {}

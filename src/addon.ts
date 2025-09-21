@@ -5,6 +5,8 @@ import {constructMagnet} from "./utils/MagnetConstructor";
 import {APPLICATION_CONFIG} from "./configuration/configuration";
 import {TorrentioResponse} from "./type/TorrentioResponse";
 import {MagnetStream} from "./type/MagnetStream";
+import {RedisWrapper} from "@/wrapper/RedisWrapper";
+import {Redis} from "@/Redis";
 
 const builder = new addonBuilder({
 	id: 'org.speed.torrent',
