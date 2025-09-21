@@ -29,5 +29,5 @@ The addon has the settings bellow, which can be modified in the `addon.ts`.
 
 1. **Install Stremio** (if you haven't already) from [stremio.com](https://www.stremio.com/).
 2. **Install project dependencies**: ```npm ci```
-3. **Run the project**: ```node server.ts```
+3. **Run the project**: ```node app.ts```
 4. **Install addon**: Addons → Paste ```http://localhost:7000/manifest.json``` in search bar

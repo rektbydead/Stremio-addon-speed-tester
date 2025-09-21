@@ -1,6 +1,6 @@
 import express from 'express'
-import { streamHandler, builder } from "../addon";
-import {getTrackers} from "../utils/TrackerObtainer";
+import { streamHandler, builder } from "./addon";
+import {getTrackers} from "./utils/TrackerObtainer";
 
 const app = express()
 const port = 7000
