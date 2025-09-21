@@ -1,4 +1,4 @@
-import { addonBuilder } from 'stremio-addon-sdk'
+import {addonBuilder} from 'stremio-addon-sdk'
 import {StreamService} from "@/services/StreamService";
 
 const builder = new addonBuilder({

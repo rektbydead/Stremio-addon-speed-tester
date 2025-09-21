@@ -4,7 +4,7 @@ import {MagnetStream} from "@/types/MagnetStream";
 import {ApplicationConfiguration} from "@/types/ApplicationConfiguration";
 import {testDownloadSpeed} from "@/utils/TorrentTester";
 
-async function evaluateNext(queue: MagnetStream[], client: WebTorrent, applicationConfig: ApplicationConfiguration, results: any[]) {
+async function evaluateNext(queue: MagnetStream[], client: InstanceType<typeof WebTorrent>, applicationConfig: ApplicationConfiguration, results: any[]) {
 	console.log(`Remaining ${queue.length} magnets. `)
 
 	const magnet: MagnetStream | undefined = queue.shift()
@@ -28,7 +28,7 @@ export async function obtainValidMagnets(applicationConfig: ApplicationConfigura
 
 	/* Start maximum of 'applicationConfig.maxConcurrentTests' test concurrently */
 	for (let i = 0; i < queue.length && i < applicationConfig.maxConcurrentTests; i++) {
-		const client: WebTorrent = new WebTorrent({dht: false, lsd: false, webSeeds: false,utp: false})
+		const client = new WebTorrent({dht: false, lsd: false, webSeeds: false,utp: false})
 
 		const promise = evaluateNext(queue, client, applicationConfig, []).then(data => {
 			results.push(...data)

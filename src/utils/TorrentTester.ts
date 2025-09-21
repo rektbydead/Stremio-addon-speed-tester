@@ -45,7 +45,7 @@ export async function testDownloadSpeed(client: WebTorrent, applicationConfig: A
             }
         }
 
-        torrent.on('download', (bytes) => {
+        torrent.on('download', (bytes: number) => {
             totalBytes += bytes
 
             /* Download maximum of 'maximumDownloadedMegaBytes' Megabytes */
@@ -59,7 +59,7 @@ export async function testDownloadSpeed(client: WebTorrent, applicationConfig: A
             peerCount = torrent.wires.length
         })
 
-        torrent.on('error', (err) => {
+        torrent.on('error', (err: any) => {
             clearTimeout(maximumTestDuration)
             clearTimeout(minimumDownloadAfterDuration)
             resolve({ speed: 0, peers: 0, error: err.message })
