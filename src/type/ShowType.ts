@@ -1,4 +1,4 @@
-enum Type {
+export enum ShowType {
     MOVIE = "movie",
     SERIES = "series",
 }

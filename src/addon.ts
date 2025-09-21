@@ -5,8 +5,8 @@ import {constructMagnet} from "./utils/MagnetConstructor";
 import {APPLICATION_CONFIG} from "./configuration/configuration";
 import {TorrentioResponse} from "./type/TorrentioResponse";
 import {MagnetStream} from "./type/MagnetStream";
-import {RedisWrapper} from "@/wrapper/RedisWrapper";
-import {Redis} from "@/Redis";
+import {RedisWrapper} from "./wrapper/RedisWrapper";
+import {Formatter} from "./formatter/Formatter";
 
 const builder = new addonBuilder({
 	id: 'org.speed.torrent',
@@ -18,25 +18,15 @@ const builder = new addonBuilder({
 	catalogs: [],
 })
 
-const CACHED_STREAMS = new Map()
-
-setInterval(() => {
-	CACHED_STREAMS.forEach((id, stream) => {
-		const isExpired = (Date.now() - stream.date) > APPLICATION_CONFIG.streamExpirationTime
-		if (isExpired === true) CACHED_STREAMS.delete(id)
-	})
-}, 20000)
-
-const streamHandler = async ({ type, id }) => {
+const streamHandler = async ({ type, id }: StreamParams) => {
 	try {
-		if (CACHED_STREAMS.has(id)) {
-			const stream = CACHED_STREAMS.get(id)
-			const isExpired = (Date.now() - stream.date) > APPLICATION_CONFIG.streamExpirationTime
+        const redis = new RedisWrapper()
+        const key: string = Formatter.formatStreamKey(type, id)
 
-			if (isExpired === false) {
-				return CACHED_STREAMS.get(id)
-			}
-		}
+        if (await redis.has(key)) {
+            const cachedStreams = await redis.get(key)
+            return { streams: cachedStreams }
+        }
 
 		const fetchedStreams: TorrentioResponse = await fetchStreams(type, id)
 		const streamsWithMagnets: MagnetStream[] = fetchedStreams.streams.map((stream) => constructMagnet(stream))
@@ -47,10 +37,7 @@ const streamHandler = async ({ type, id }) => {
 			streamsWithMagnets
 		)
 
-		CACHED_STREAMS.set(id, {
-			date: Date.now(),
-			streams: validStreams
-		})
+        await redis.save(key, validStreams)
 
 		console.log(`Total of number of valid streams: ${validStreams.length}`)
 		return { streams: validStreams }
