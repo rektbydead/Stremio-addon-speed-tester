@@ -1,5 +1,5 @@
 import { addonBuilder } from 'stremio-addon-sdk'
-import {StreamService} from "@/service/StreamService";
+import {StreamService} from "@/services/StreamService";
 
 const builder = new addonBuilder({
 	id: 'org.speed.torrent',

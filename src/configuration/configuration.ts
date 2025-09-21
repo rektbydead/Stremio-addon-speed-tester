@@ -1,4 +1,4 @@
-import {ApplicationConfiguration} from "../type/ApplicationConfiguration";
+import {ApplicationConfiguration} from "@/types/ApplicationConfiguration";
 
 export const APPLICATION_CONFIG: ApplicationConfiguration = {
 	maxConcurrentTests: 5,

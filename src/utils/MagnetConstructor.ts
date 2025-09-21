@@ -1,5 +1,5 @@
-import {Stream} from "../type/TorrentioResponse";
-import {MagnetStream} from "../type/MagnetStream";
+import {Stream} from "@/types/TorrentioResponse";
+import {MagnetStream} from "@/types/MagnetStream";
 
 export function constructMagnet(stream: Stream): MagnetStream {
 	const infoHash = stream.infoHash

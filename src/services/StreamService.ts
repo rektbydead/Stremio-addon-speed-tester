@@ -1,10 +1,10 @@
-import {RedisWrapper} from "@/wrapper/RedisWrapper";
-import {Formatter} from "@/formatter/Formatter";
-import {TorrentioResponse} from "@/type/TorrentioResponse";
+import {RedisWrapper} from "@/wrappers/RedisWrapper";
+import {Formatter} from "@/formatters/Formatter";
+import {TorrentioResponse} from "@/types/TorrentioResponse";
 import {fetchStreams} from "@/utils/StreamFetcher";
-import {MagnetStream} from "@/type/MagnetStream";
+import {MagnetStream} from "@/types/MagnetStream";
 import {constructMagnet} from "@/utils/MagnetConstructor";
-import {obtainValidMagnets} from "@/validator/ValidateStream";
+import {obtainValidMagnets} from "@/validators/ValidateStream";
 import {APPLICATION_CONFIG} from "@/configuration/configuration";
 
 export class StreamService {

@@ -1,16 +1,17 @@
 import WebTorrent from "webtorrent";
-import {ValidatedMagnetStream} from "../type/ValidatedMagnetStream";
-import {MagnetStream} from "../type/MagnetStream";
-import {ApplicationConfiguration} from "../type/ApplicationConfiguration";
+import {ValidatedMagnetStream} from "@/types/ValidatedMagnetStream";
+import {MagnetStream} from "@/types/MagnetStream";
+import {ApplicationConfiguration} from "@/types/ApplicationConfiguration";
 import {testDownloadSpeed} from "../utils/TorrentTester";
 
 async function evaluateNext(queue: MagnetStream[], client: WebTorrent, applicationConfig: ApplicationConfiguration, results: any[]) {
-	if (queue.length === 0) { return results }
-
 	console.log(`Remaining ${queue.length} magnets. `)
 
-	const magnet: MagnetStream = queue.shift()
+	const magnet: MagnetStream | undefined = queue.shift()
+    if (magnet === undefined) return results
+
 	const data: any = await testDownloadSpeed(client, applicationConfig, magnet)
+
 	results.push({
 		...magnet,
 		...data
