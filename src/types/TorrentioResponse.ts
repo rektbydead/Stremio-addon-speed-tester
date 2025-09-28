@@ -16,5 +16,7 @@ export interface Stream {
     infoHash: string,
     fileIdx: number,
     behaviorHints: BehaviourHint,
-    sources?: string[]
+    sources?: string[],
+    peers?: number,
+    size?: string,
 }

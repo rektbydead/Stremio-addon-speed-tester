@@ -10,6 +10,19 @@ services:
     depends_on:
       - redis
 
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - stremio-addon-speed-test
+    depends_on:
+      - addon
+    command: ["npx", "tsx", "./src/bullmq/workers/addStreamWorker.ts"]
+    deploy:
+      mode: replicated
+      replicas: 10
+
   redis:
     image: docker.io/redis:alpine
     command: redis-server --save "" --appendonly no
