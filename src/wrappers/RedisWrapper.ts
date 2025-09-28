@@ -9,7 +9,7 @@ export class RedisWrapper {
             typeof value === 'object'
             ? JSON.stringify(value)
             : value,
-            { EX: expireSeconds }
+            //{ EX: expireSeconds }
         )
     }
 
@@ -28,6 +28,6 @@ export class RedisWrapper {
 
     public async has(key: string) {
         const client = await RedisClient.getInstance()
-        return await client.exists(key)
+        return client.exists(key);
     }
 }

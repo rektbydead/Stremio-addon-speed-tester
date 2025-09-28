@@ -2,7 +2,7 @@ import axios from "axios";
 import {TorrentioResponse} from "@/types/TorrentioResponse.js";
 import {ShowType} from "@/types/ShowType";
 
-export async function fetchStreams(type: ShowType, id: string): Promise<TorrentioResponse> {
+export async function fetchStreams(type: string, id: string): Promise<TorrentioResponse> {
 	const url = `https://torrentio.strem.fun/stream/${type}/${id}.json`
 	console.log("Fetching from:", url)
 
