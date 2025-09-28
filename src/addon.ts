@@ -1,5 +1,6 @@
 import {addonBuilder} from 'stremio-addon-sdk'
 import {StreamService} from "@/services/StreamService";
+import testQueue from "@/bullmq/queues/streamTaskQueue";
 
 const builder = new addonBuilder({
 	id: 'org.speed.torrent',
@@ -15,6 +16,7 @@ const streamService = new StreamService()
 
 const streamHandler = async ({ type, id }: StreamParams) => {
     const streams = await streamService.getStream(type, id)
+    console.log(type, id, streams)
     return { streams: streams }
 }
 

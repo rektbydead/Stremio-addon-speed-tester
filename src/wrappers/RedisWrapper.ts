@@ -28,6 +28,6 @@ export class RedisWrapper {
 
     public async has(key: string) {
         const client = await RedisClient.getInstance()
-        return await client.exists(key)
+        return client.exists(key);
     }
 }
