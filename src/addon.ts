@@ -15,17 +15,9 @@ const builder = new addonBuilder({
 const streamService = new StreamService()
 
 const streamHandler = async ({ type, id }: StreamParams) => {
-    // const streams = await streamService.getStream(type, id)
-
-    for (let i = 0; i < 100; i++) {
-        testQueue.add("carai", {type, id}, {
-            removeOnComplete: true,
-            removeOnFail: true,
-        })
-    }
-
-    console.log("ACABOU CARALHO")
-    return { streams: [] }
+    const streams = await streamService.getStream(type, id)
+    console.log(type, id, streams)
+    return { streams: streams }
 }
 
 builder.defineStreamHandler(streamHandler)

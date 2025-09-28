@@ -9,7 +9,7 @@ export class RedisWrapper {
             typeof value === 'object'
             ? JSON.stringify(value)
             : value,
-            //{ EX: expireSeconds }
+            { EX: expireSeconds }
         )
     }
 

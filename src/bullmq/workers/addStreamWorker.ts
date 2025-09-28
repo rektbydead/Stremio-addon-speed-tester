@@ -1,22 +1,28 @@
-import { Worker } from 'bullmq'
+import {Job, Worker} from 'bullmq'
 import Redis from "ioredis";
-import testQueue from "@/bullmq/queues/streamTaskQueue";
+import {APPLICATION_CONFIG} from "@/configuration/configuration";
+import WebTorrent from "webtorrent";
+import {testDownloadSpeed} from "@/utils/TorrentTester";
+import {MagnetStream} from "@/types/MagnetStream";
 
 const connection = new Redis({ host: "redis", port: 6379, maxRetriesPerRequest: null });
 
-const worker = new Worker("testQueue", async (job) => {
-    await new Promise(resolve =>
-        setTimeout(resolve, 1000)
-    )
+const worker = new Worker("testQueue", async (job: Job<MagnetStream>) => {
+    const client = new WebTorrent({dht: false, lsd: false, webSeeds: false,utp: false})
+    const data: any = await testDownloadSpeed(client, APPLICATION_CONFIG, job.data)
+    client.destroy()
 
-    console.log("Queue length: " + JSON.stringify(await testQueue.getJobCounts()))
-    console.log(`🔹 Processing job: ${job.id} - ${job.data.message}`);
+	return {
+		...job.data,
+		...data
+	}
 }, { connection: connection });
 
 worker.on("completed", (job) => {
-    console.log(`✅ Job ${JSON.stringify(job)} completed`)
+    console.log(`✅ Job completed`)
 })
 
 worker.on("failed", (job, err) => {
-    console.log(`❌ Job ${JSON.stringify(job)} failed: ${err.message}`)
+    console.log()
+    console.log(`❌ Job failed`)
 })

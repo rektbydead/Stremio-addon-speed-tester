@@ -21,7 +21,7 @@ services:
     command: ["npx", "tsx", "./src/bullmq/workers/addStreamWorker.ts"]
     deploy:
       mode: replicated
-      replicas: 2
+      replicas: 10
 
   redis:
     image: docker.io/redis:alpine
